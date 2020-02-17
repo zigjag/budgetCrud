@@ -1,0 +1,11 @@
+body {
+  background-color: #f1f3f4;
+  background-image: -webkit-linear-gradient(65deg, #79bac1 50%, #2a7886 50%);
+  min-height: 1000px;
+  color: #b2dffb; 
+}
+
+footer {
+  margin-top: 50px;
+  text-align: center;
+}

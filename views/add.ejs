@@ -1,0 +1,59 @@
+<%- include("header") -%>
+
+<div class="container">
+  <h2><%= pageTitle %></h2>
+
+  <form action="/save" method="post">
+
+    <div class="form-group">
+      <label for="date">Date:</label>
+      <input class="form-control date" type="date" name="date">
+    </div>
+
+    <div class="form-group">
+      <label for="type">Type:</label>
+      <select class="form-control type" name="type">
+        <option value="Income" selected>Income</option>
+        <option value="Expense">Expense</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category:</label>
+      <select class="form-control category" name="category">
+        <% for(var i = 0; i < incomeItems.length; i++) { %>
+        <option class="A"><%= incomeItems[i] %></option>
+        <%  } %>
+
+        <% for(var i = 0; i < expenseItems.length; i++) { %>
+        <option class="B"><%= expenseItems[i] %></option>
+        <%  } %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="Description">Description:</label>
+      <input class="form-control description" type="text" name="description" placeholder="Bought school supplies">
+    </div>
+
+    <div class="form-group">
+      <label for="pmt_method">Payment Method:</label>
+      <Select class="form-control pmt_method" name="pmt_method">
+        <option selected>Account/ACH</option>
+        <option>Debit Card</option>
+        <option>Credit Card</option>
+      </Select>
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input class="form-control amount" type="text" name="amount" placeholder="123.45">
+    </div>
+
+    <button class="btn btn-primary" type="submit" name="button">Add Transaction</button>
+  </form>
+
+</div>
+
+
+<%- include("footer") -%>
