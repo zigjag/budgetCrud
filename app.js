@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mysql = require("mysql");
 const path = require("path");
+const request = require("request");
 
 const app = express();
 const connection = mysql.createConnection({
@@ -10,10 +11,14 @@ const connection = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'transactions',
+  multipleStatements: true
 });
 
 let incomeItems = ["Checking Balance", "Savings Balance", "Paycheck", "Bonus", "Interest Income", "Other Income"];
 let expenseItems = ["Transportation/Work", "Bills", "Debt", "Groceries and Shopping", "Home/Rent", "Entertainment", "Transfer Out", "Other"];
+let filteredResults;
+let filterType;
+let filterDate;
 
 connection.connect(function(error) {
   if (error) console.log(error);
@@ -33,9 +38,9 @@ app.listen(3000, function() {
 });
 
 app.get("/", function(req, res) {
-  let title = "Budget App";
+  let title = "Personal Finance App";
 
-  let statement = "SELECT * FROM `2020`";
+  let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020`";
   let query = connection.query(statement, function(error, rows) {
     if (error) console.log(error);
     else {
@@ -48,10 +53,8 @@ app.get("/", function(req, res) {
 });
 
 app.get("/add", function(req, res) {
-  let title = "Budget App: Add Page";
-
   res.render("add", {
-    pageTitle: title,
+    pageTitle: "Personal Finance App: Add Page",
     incomeItems: incomeItems,
     expenseItems: expenseItems
   });
@@ -76,12 +79,12 @@ app.post("/save", function(req, res) {
 
 app.get("/edit", function(req, res) {
   const id = req.query.id;
-  let statement = "SELECT * FROM `2020` WHERE id = " + id;
+  let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020` WHERE id = " + id;
   let query = connection.query(statement, function(error, result) {
     if (error) console.log(error);
     else {
       res.render("edit", {
-        pageTitle: "Budget App: Edit Page",
+        pageTitle: "Personal Finance App: Edit Page",
         records: result[0],
         date: JSON.stringify(result[0].date).substring(1, 11),
         incomeItems: incomeItems,
@@ -111,12 +114,53 @@ app.get("/delete", function(req, res) {
   });
 });
 
-app.get("/balance", function(req, res) {
-  let statement = "SELECT SUM(amount) AS balance FROM `2020`";
-  let query = connection.query(statement, function(error, result){
+app.get("/balances", function(req, res) {
+  let incomeStatement = "SELECT SUM(amount) totalIncome FROM `2020` WHERE type = 'Income';";
+  let expenseStatement = "SELECT SUM(amount) totalExpenses FROM `2020` WHERE type = 'Expense';";
+  let statements = incomeStatement + " " + expenseStatement;
+
+  let query = connection.query(statements, function(error, result) {
     if (error) console.log(error);
     else {
-      res.send("Current balance is " + result[0].balance);
+      res.render("balances", {
+        pageTitle: "Personal Finance App: Balances",
+        currentBalance: currencyFormat('en-US', 'USD', (result[0][0].totalIncome - result[1][0].totalExpenses)),
+        totalIncome: currencyFormat('en-US', 'USD', result[0][0].totalIncome),
+        totalExpenses: currencyFormat('en-US', 'USD', result[1][0].totalExpenses)
+      });
     }
   });
 });
+
+app.get("/filter", function(req, res) {
+  res.render("filter", {
+    pageTitle: "Personal Finance App: Filter Results Page",
+    results: filteredResults,
+    date: filterDate,
+    type: filterType
+  });
+});
+
+app.post("/renderResults", function(req, res) {
+  let statement = "SELECT SUM(amount) filterResult FROM `2020` WHERE MONTHNAME(date) = '" + req.body.date + "' And type = '" + req.body.type + "'";
+
+  let query = connection.query(statement, function(error, result) {
+    if (error) console.log(error);
+    else {
+      filteredResults = currencyFormat('en-US', 'USD', result[0].filterResult);
+      filterType = req.body.type,
+      filterDate = req.body.date
+
+      res.redirect("filter");
+    }
+  });
+});
+
+
+function currencyFormat(locale, currency, number) {
+  let formattedNumber = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency
+  }).format((number));
+  return formattedNumber;
+};
