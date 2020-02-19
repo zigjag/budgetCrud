@@ -1,42 +1,50 @@
 <%- include("header") -%>
 
+<a href="/add" class="btn btn-sm btn-primary">Add Record</a><br /><br />
 
-<div class="container">
-  <h2><%= pageTitle %></h2>
-  <a href="/add" class="btn btn-sm btn-primary">Add Record</a><br /><br />
+<img class="walking-man" src="images/man.gif" alt="A walking man" width="400px">
 
-  <table class="table table-dark table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Type</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Payment Method</th>
-        <th>Amount</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% records.forEach(function(record) { %>
-      <tr>
-        <td><%= record.id %></td>
-        <td><%= record.date %></td>
-        <td><%= record.type %></td>
-        <td><%= record.category %></td>
-        <td><%= record.description %></td>
-        <td><%= record.pmt_method %></td>
-        <td><%= record.amount %></td>
-        <td>
-          <a href="edit?id=<%= record.id %>" class="btn btn-sm btn-primary">Edit</a>
-          <a href="delete?id=<%= record.id %>" class="btn btn-sm btn-danger">Delete</a>
-        </td>
-      </tr>
-      <% }); %>
+<table class="table table-dark table-striped table-hover table-sm table-responsive-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th>Payment Method</th>
+      <th>Amount</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% records.forEach(function(record) { %>
+    <tr>
+      <td><%= record.id %></td>
+      <td><%= record.date %></td>
+      <td><%= record.type %></td>
+      <td><%= record.category %></td>
+      <td><%= record.description %></td>
+      <td><%= record.pmt_method %></td>
+      <td><%= record.amount %></td>
+      <td>
+        <a href="edit?id=<%= record.id %>" class="btn btn-sm btn-primary">Edit</a>
+        <a href="delete?id=<%= record.id %>" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+    <% }); %>
 
-    </tbody>
-  </table>
-</div>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    setInterval(function() {
+      $(".walking-man").animate({
+        marginLeft: '+=30px'
+      }, 500);
+    });
+  });
+</script>
 
 <%- include("footer") -%>
