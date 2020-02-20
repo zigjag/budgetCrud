@@ -4,6 +4,8 @@ const ejs = require("ejs");
 const mysql = require("mysql");
 const path = require("path");
 const request = require("request");
+const cat = require(__dirname + "/views/categories.js");
+const format = require(__dirname + "/views/format.js")
 
 const app = express();
 const connection = mysql.createConnection({
@@ -14,8 +16,6 @@ const connection = mysql.createConnection({
   multipleStatements: true
 });
 
-let incomeItems = ["Checking Balance", "Savings Balance", "Paycheck", "Bonus", "Interest Income", "Other Income"];
-let expenseItems = ["Transportation/Work", "Bills", "Debt", "Groceries and Shopping", "Home/Rent", "Entertainment", "Transfer Out", "Other"];
 let filteredResults;
 let filterType;
 let filterDate;
@@ -38,14 +38,12 @@ app.listen(3000, function() {
 });
 
 app.get("/", function(req, res) {
-  let title = "Personal Finance App";
-
   let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020`";
   let query = connection.query(statement, function(error, rows) {
     if (error) console.log(error);
     else {
       res.render("index", {
-        pageTitle: title,
+        pageTitle: "Personal Fiance App",
         records: rows
       });
     }
@@ -54,9 +52,7 @@ app.get("/", function(req, res) {
 
 app.get("/add", function(req, res) {
   res.render("add", {
-    pageTitle: "Personal Finance App: Add Page",
-    incomeItems: incomeItems,
-    expenseItems: expenseItems
+    pageTitle: "Personal Finance App: Add"
   });
 });
 
@@ -84,11 +80,8 @@ app.get("/edit", function(req, res) {
     if (error) console.log(error);
     else {
       res.render("edit", {
-        pageTitle: "Personal Finance App: Edit Page",
+        pageTitle: "Personal Finance App: Edit",
         records: result[0],
-        date: JSON.stringify(result[0].date).substring(1, 11),
-        incomeItems: incomeItems,
-        expenseItems: expenseItems
       });
     }
   });
@@ -124,9 +117,9 @@ app.get("/balances", function(req, res) {
     else {
       res.render("balances", {
         pageTitle: "Personal Finance App: Balances",
-        currentBalance: currencyFormat('en-US', 'USD', (result[0][0].totalIncome - result[1][0].totalExpenses)),
-        totalIncome: currencyFormat('en-US', 'USD', result[0][0].totalIncome),
-        totalExpenses: currencyFormat('en-US', 'USD', result[1][0].totalExpenses)
+        currentBalance: format.getUsCurrency((result[0][0].totalIncome - result[1][0].totalExpenses)),
+        totalIncome: format.getUsCurrency(result[0][0].totalIncome),
+        totalExpenses: format.getUsCurrency(result[1][0].totalExpenses)
       });
     }
   });
@@ -134,7 +127,7 @@ app.get("/balances", function(req, res) {
 
 app.get("/filter", function(req, res) {
   res.render("filter", {
-    pageTitle: "Personal Finance App: Filter Results Page",
+    pageTitle: "Personal Finance App: Filter",
     results: filteredResults,
     date: filterDate,
     type: filterType
@@ -147,20 +140,11 @@ app.post("/renderResults", function(req, res) {
   let query = connection.query(statement, function(error, result) {
     if (error) console.log(error);
     else {
-      filteredResults = currencyFormat('en-US', 'USD', result[0].filterResult);
+      filteredResults = format.getUsCurrency(result[0].filterResult);
       filterType = req.body.type,
-      filterDate = req.body.date
+        filterDate = req.body.date
 
       res.redirect("filter");
     }
   });
 });
-
-
-function currencyFormat(locale, currency, number) {
-  let formattedNumber = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency
-  }).format((number));
-  return formattedNumber;
-};
