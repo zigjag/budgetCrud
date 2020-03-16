@@ -2,12 +2,22 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mysql = require("mysql");
+const axios = require('axios');
+
 const path = require("path");
-const request = require("request");
 const cat = require(__dirname + "/views/categories.js");
 const format = require(__dirname + "/views/format.js")
 
 const app = express();
+app.set("view engine", "ejs");
+const publicDir = path.join(__dirname, "public");
+app.use(express.static(publicDir));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
+
+const PORT = process.env.PORT || 3000;
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -16,26 +26,10 @@ const connection = mysql.createConnection({
   multipleStatements: true
 });
 
+// filter variables Remember
 let filteredResults;
 let filterType;
 let filterDate;
-
-connection.connect(function(error) {
-  if (error) console.log(error);
-  else console.log("Database Connected.");
-});
-
-app.set("view engine", "ejs");
-// app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(express.static("public"));
-// app.set('views',path.join(__dirname,'views'));
-
-app.listen(3000, function() {
-  console.log("Server started on port 3000");
-});
 
 app.get("/", function(req, res) {
   let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020`";
@@ -75,7 +69,9 @@ app.post("/save", function(req, res) {
 
 app.get("/edit", function(req, res) {
   const id = req.query.id;
+
   let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020` WHERE id = " + id;
+
   let query = connection.query(statement, function(error, result) {
     if (error) console.log(error);
     else {
@@ -88,8 +84,12 @@ app.get("/edit", function(req, res) {
 });
 
 app.post("/update", function(req, res) {
-  const id = req.body.id;
-  let statement = "UPDATE `2020` SET date='" + req.body.date + "', type='" + req.body.type + "', category='" + req.body.category + "', description='" + req.body.description + "', pmt_method='" + req.body.pmt_method + "', amount='" + req.body.amount + "' where id =" + id;
+
+  let statement = "UPDATE `2020` SET date='" + req.body.date + "', type='" + req.body.type +
+    "', category='" + req.body.category + "', description='" +
+    req.body.description + "', pmt_method='" + req.body.pmt_method +
+    "', amount='" + req.body.amount + "' where id =" + req.body.id;
+
   let query = connection.query(statement, function(error, result) {
     if (error) console.log(error);
     res.redirect("/");
@@ -147,4 +147,8 @@ app.post("/renderResults", function(req, res) {
       res.redirect("filter");
     }
   });
+});
+
+app.listen(PORT, function() {
+  console.log("Server started on port 3000");
 });
