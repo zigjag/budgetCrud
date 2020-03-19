@@ -1,7 +1,6 @@
 {
   "name": "budgetcrud",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,5 +16,15 @@
     "mysql": "^2.18.1",
     "path": "^0.12.7",
     "request": "^2.88.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zigjag/budgetCrud.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/zigjag/budgetCrud/issues"
+  },
+  "homepage": "https://github.com/zigjag/budgetCrud#readme",
+  "description": ""
 }

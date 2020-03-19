@@ -1,6 +1,6 @@
-<%- include("header") -%>
+<%- include("partials/header") -%>
 
-  <form action="/save" method="post">
+  <form action="/add" method="post">
 
     <div class="form-group">
       <label for="date">Date:</label>
@@ -9,7 +9,7 @@
 
     <div class="form-group">
       <label>Type: </label>
-      <input class="form-control type" type="text" list="type_options">
+      <input class="form-control type" type="text" name="type" list="type_options">
       <datalist id="type_options">
         <option value="Income">Income</option>
         <option value="Expense">Expense</option>
@@ -19,7 +19,7 @@
 
     <div class="form-group">
       <label>Category: </label>
-      <input class="form-control category" type="text" list="category_options">
+      <input class="form-control category" type="text" name="category" list="category_options">
       <datalist id="category_options">
       </datalist>
     </div>
@@ -31,7 +31,7 @@
 
     <div class="form-group">
       <label>Payment Method: </label>
-      <input class="form-control pmt_method" type="text" list="pmt_method_options">
+      <input class="form-control pmt_method" type="text" name="pmt_method" list="pmt_method_options">
       <datalist id="pmt_method_options">
         <option value="Account/ACH">Account/ACH</option>
         <option value="Debit Card">Debit Card</option>
@@ -71,4 +71,4 @@
   });
 </script>
 
-<%- include("footer") -%>
+<%- include("partials/footer") -%>

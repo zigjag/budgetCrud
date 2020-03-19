@@ -5,8 +5,8 @@ const mysql = require("mysql");
 const axios = require('axios');
 
 const path = require("path");
-const cat = require(__dirname + "/views/categories.js");
-const format = require(__dirname + "/views/format.js")
+const cat = require(__dirname + "/public/js/categories.js");
+const format = require(__dirname + "/public/js/format.js")
 
 const app = express();
 app.set("view engine", "ejs");
@@ -17,7 +17,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 3000;
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -31,100 +30,110 @@ let filteredResults;
 let filterType;
 let filterDate;
 
-app.get("/", function(req, res) {
-  let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020`";
-  let query = connection.query(statement, function(error, rows) {
-    if (error) console.log(error);
-    else {
-      res.render("index", {
-        pageTitle: "Personal Fiance App",
-        records: rows
-      });
-    }
+//--------------------index Route--------------------
+app.route("/")
+  .get(function(req, res) {
+    let incomeStatement = "SELECT SUM(amount) totalIncome FROM `2020` WHERE type = 'Income';";
+    let expenseStatement = "SELECT SUM(amount) totalExpenses FROM `2020` WHERE type = 'Expense';";
+    let statements = incomeStatement + " " + expenseStatement;
+
+    let query = connection.query(statements, function(error, result) {
+      if (error) console.log(error);
+      else {
+        res.render("index", {
+          pageTitle: "Personal Finance App",
+          currentBalance: format.getUsCurrency((result[0][0].totalIncome - result[1][0].totalExpenses)),
+          totalIncome: format.getUsCurrency(result[0][0].totalIncome),
+          totalExpenses: format.getUsCurrency(result[1][0].totalExpenses)
+        });
+      }
+    });
   });
-});
 
-app.get("/add", function(req, res) {
-  res.render("add", {
-    pageTitle: "Personal Finance App: Add"
+//--------------------transactions Route--------------------
+
+app.route("/transactions")
+  .get(function(req, res) {
+    let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020`";
+    let query = connection.query(statement, function(error, rows) {
+      if (error) console.log(error);
+      else {
+        res.render("transactions", {
+          pageTitle: "Personal Finance App: Transactions",
+          records: rows
+        });
+      }
+    });
   });
-});
 
-app.post("/save", function(req, res) {
-  let data = {
-    date: req.body.date,
-    type: req.body.type,
-    category: req.body.category,
-    description: req.body.description,
-    pmt_method: req.body.pmt_method,
-    amount: req.body.amount,
-  };
+//--------------------Add Route--------------------
+app.route("/add")
+  .get(function(req, res) {
+    res.render("add", {
+      pageTitle: "Personal Finance App: Add"
+    });
+  })
+  .post(function(req, res) {
+    let data = {
+      date: req.body.date,
+      type: req.body.type,
+      category: req.body.category,
+      description: req.body.description,
+      pmt_method: req.body.pmt_method,
+      amount: req.body.amount,
+    };
 
-  let statement = "INSERT INTO `2020` SET ?";
-  let query = connection.query(statement, data, function(error, results) {
-    if (error) console.log(error);
-    else res.redirect("/")
+    let statement = "INSERT INTO `2020` SET ?";
+    let query = connection.query(statement, data, function(err, results) {
+      if (!err) {
+        res.redirect("/");
+      } else {
+        res.send(err);
+      }
+    });
   });
-});
 
-app.get("/edit", function(req, res) {
-  const id = req.query.id;
+//--------------------edit Route--------------------
+app.route("/edit")
+  .get(function(req, res) {
+    const id = req.query.id;
 
-  let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020` WHERE id = " + id;
+    let statement = "SELECT id, DATE_FORMAT(date, '%Y-%m-%d') AS date, type, category, description, pmt_method, amount FROM `2020` WHERE id = " + id;
 
-  let query = connection.query(statement, function(error, result) {
-    if (error) console.log(error);
-    else {
-      res.render("edit", {
-        pageTitle: "Personal Finance App: Edit",
-        records: result[0],
-      });
-    }
+    let query = connection.query(statement, function(error, result) {
+      if (error) console.log(error);
+      else {
+        res.render("edit", {
+          pageTitle: "Personal Finance App: Edit",
+          records: result[0],
+        });
+      }
+    });
+  })
+  .post(function(req, res) {
+
+    let statement = "UPDATE `2020` SET date='" + req.body.date + "', type='" + req.body.type +
+      "', category='" + req.body.category + "', description='" +
+      req.body.description + "', pmt_method='" + req.body.pmt_method +
+      "', amount='" + req.body.amount + "' where id =" + req.body.id;
+
+    let query = connection.query(statement, function(error, result) {
+      if (!error) res.redirect("/");
+      else res.send(error);
+    });
   });
-});
 
-app.post("/update", function(req, res) {
-
-  let statement = "UPDATE `2020` SET date='" + req.body.date + "', type='" + req.body.type +
-    "', category='" + req.body.category + "', description='" +
-    req.body.description + "', pmt_method='" + req.body.pmt_method +
-    "', amount='" + req.body.amount + "' where id =" + req.body.id;
-
-  let query = connection.query(statement, function(error, result) {
-    if (error) console.log(error);
-    res.redirect("/");
-  });
-});
-
+//--------------------delete Route--------------------
 app.get("/delete", function(req, res) {
   const id = req.query.id;
   let statement = "DELETE FROM `2020` WHERE id = " + id;
   let query = connection.query(statement, function(error, result) {
-    if (error) console.log(error);
-    else {
-      res.redirect("/");
-    }
+    if (!error) res.redirect("/");
+    else res.send(error);
   });
 });
 
-app.get("/balances", function(req, res) {
-  let incomeStatement = "SELECT SUM(amount) totalIncome FROM `2020` WHERE type = 'Income';";
-  let expenseStatement = "SELECT SUM(amount) totalExpenses FROM `2020` WHERE type = 'Expense';";
-  let statements = incomeStatement + " " + expenseStatement;
-
-  let query = connection.query(statements, function(error, result) {
-    if (error) console.log(error);
-    else {
-      res.render("balances", {
-        pageTitle: "Personal Finance App: Balances",
-        currentBalance: format.getUsCurrency((result[0][0].totalIncome - result[1][0].totalExpenses)),
-        totalIncome: format.getUsCurrency(result[0][0].totalIncome),
-        totalExpenses: format.getUsCurrency(result[1][0].totalExpenses)
-      });
-    }
-  });
-});
-
+//---------------------filter seciont-------------------
 app.get("/filter", function(req, res) {
   res.render("filter", {
     pageTitle: "Personal Finance App: Filter",
@@ -149,6 +158,9 @@ app.post("/renderResults", function(req, res) {
   });
 });
 
+//-------------------Port Section-------------------
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, function() {
-  console.log("Server started on port 3000");
+  console.log("Server started on port " + PORT);
 });
