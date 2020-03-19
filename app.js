@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mysql = require("mysql");
-const axios = require('axios');
 
 const path = require("path");
 const cat = require(__dirname + "/public/js/categories.js");
@@ -18,10 +17,10 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
-  host: 'http://ya9306kk.epizy.com',
-  user: 'epiz_24933372',
-  password: 'NfomqL5kGOn',
-  database: 'epiz_24933372_transactions',
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'transactions',
   multipleStatements: true
 });
 
@@ -128,7 +127,7 @@ app.get("/delete", function(req, res) {
   const id = req.query.id;
   let statement = "DELETE FROM `2020` WHERE id = " + id;
   let query = connection.query(statement, function(error, result) {
-    if (!error) res.redirect("/");
+    if (!error) res.redirect("/transactions");
     else res.send(error);
   });
 });
