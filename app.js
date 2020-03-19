@@ -18,10 +18,10 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'transactions',
+  host: 'http://ya9306kk.epizy.com',
+  user: 'epiz_24933372',
+  password: 'NfomqL5kGOn',
+  database: 'epiz_24933372_transactions',
   multipleStatements: true
 });
 
