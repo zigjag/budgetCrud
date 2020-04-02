@@ -17,9 +17,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: '104.154.221.161',
   user: 'root',
-  password: '',
+  password: '104Percent%',
   database: 'transactions',
   multipleStatements: true
 });
