@@ -26,5 +26,6 @@
     "url": "https://github.com/zigjag/budgetCrud/issues"
   },
   "homepage": "https://github.com/zigjag/budgetCrud#readme",
+  "devDependencies": {},
   "description": ""
 }
