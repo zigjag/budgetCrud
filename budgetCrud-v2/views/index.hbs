@@ -1,0 +1,14 @@
+{{>header}}
+    <h1>{{buttonText}}</h1>
+
+    <form action="/{{actionText}}" method="post">
+      <label>Username</label>
+      <input type="text" name="username" placeholder="Spongebob" required>
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="p@ssw0rd" required>
+
+      <button type="submit" name="login">{{buttonText}}</button>
+    </form>
+
+{{>footer}}

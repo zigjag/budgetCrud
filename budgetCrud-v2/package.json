@@ -1,0 +1,37 @@
+{
+  "name": "budgetCrud-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "env-cmd -f config/dev.env nodemon src/app.js",
+    "test": "env-cmd -f config/test.env jest --watch --runInBand"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zigjag/budgetCrud.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zigjag/budgetCrud/issues"
+  },
+  "homepage": "https://github.com/zigjag/budgetCrud#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "hbs": "^4.1.1",
+    "mongoose": "^5.9.24"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "jest": "^26.1.0",
+    "nodemon": "^2.0.4"
+  }
+}
