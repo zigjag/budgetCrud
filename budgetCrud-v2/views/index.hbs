@@ -1,14 +1,22 @@
 {{>header}}
-    <h1>{{buttonText}}</h1>
 
-    <form action="/{{actionText}}" method="post">
-      <label>Username</label>
-      <input type="text" name="username" placeholder="Spongebob" required>
+<div class="form-div">
 
-      <label>Password</label>
-      <input type="password" name="password" placeholder="p@ssw0rd" required>
+  <form action="/{{link}}" method="post">
+    <h1>{{text}}</h1>
+    
+    <label>Username</label>
+    <input type="text" name="username" placeholder="Spongebob" required>
 
-      <button type="submit" name="login">{{buttonText}}</button>
-    </form>
+    <label>Password</label>
+    <input type="password" name="password" placeholder="p@ssw0rd" required>
+
+    <button type="submit" name="login">{{text}}</button>
+
+    <a href="/{{altLink}}">{{altText}}</a>
+  </form>
+
+</div>
+
 
 {{>footer}}

@@ -3,6 +3,26 @@ html, body {
   padding: 0;
 }
 
-form > *{
+/* -------------- Alphabetized --------------- */
+footer{
+  text-align: center;
+}
+
+form > h1, a{
+  text-align: center;
+}
+
+form > button{
+  background-color: green;
+}
+
+.form-div{
+  display: flex;
+  justify-content: center;
+}
+
+.form-div > form > *{
   display: block;
+  margin: 15px;
+  width: 100%;
 }
