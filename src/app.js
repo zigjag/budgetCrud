@@ -2,8 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mysql = require("mysql");
-
 const path = require("path");
+
 const cat = require(__dirname + "/public/js/categories.js");
 const format = require(__dirname + "/public/js/format.js")
 
@@ -158,7 +158,7 @@ app.post("/renderResults", function(req, res) {
 });
 
 //-------------------Port Section-------------------
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, function() {
   console.log("Server started on port " + PORT);

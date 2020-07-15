@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js",
+    "dev": "env-cmd -f config/dev.env nodemon src/app.js"
   },
   "author": "Joseph Kligel",
   "license": "ISC",
@@ -26,6 +27,8 @@
     "url": "https://github.com/zigjag/budgetCrud/issues"
   },
   "homepage": "https://github.com/zigjag/budgetCrud#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
+  },
   "description": ""
 }
