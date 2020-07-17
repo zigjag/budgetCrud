@@ -2,6 +2,8 @@
 
   <h1>{{text}}</h1>
 
+  <a href="/record" class="btn btn-sm btn-success">Add</a>
+
   <table class="table table-bordered table-dark table-striped table-hover table-sm">
   <thead>
     <tr>
@@ -16,8 +18,8 @@
     </tr>
   </thead>
   <tbody>
-    <a href="/edit?id=<%= record.id %>" class="btn btn-sm btn-primary">Edit</a>
-    <a href="/delete?id=<%= record.id %>" class="btn btn-sm btn-danger">Delete</a>
+    {{!-- <a href="/edit?id=<%= record.id %>" class="btn btn-sm btn-primary">Edit</a>
+    <a href="/delete?id=<%= record.id %>" class="btn btn-sm btn-danger">Delete</a> --}}
   </tbody>
 </table>
 

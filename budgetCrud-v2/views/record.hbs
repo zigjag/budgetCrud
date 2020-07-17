@@ -1,0 +1,38 @@
+{{>header}}
+
+<div class="form-div">
+    <form action="/record" method="post">
+        <label>Date</label>
+        <input type="date" name="date">
+
+        <label>Type</label>
+        <select name="type" required>
+            <option value="Income">Income</option>
+            <option value="Expense" selected>Expense</option>
+        </select>
+    
+        <label>Payment Type</label>
+        <select name="payment_type" required>
+            <option value="Cash">Cash</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Debit Card">Debit Card</option>
+            <option value="Account Transfer">Account Transfer</option>>
+        </select>
+    
+        <label>Category</label>
+        <select name="category" required>
+            {{!-- options added by categories.js --}}
+        </select>
+    
+        <label>Description</label>
+        <input type="text" name="description">
+    
+        <label>Amount</label>
+        <input type="number" name="amount" step=0.01 min="0" required>
+
+        <button type="Submit">Submit</button>
+    </form>
+</div>
+
+<script src="js/categories.js"></script>
+{{>footer}}

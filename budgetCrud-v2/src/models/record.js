@@ -1,19 +1,21 @@
 const mongoose = require('mongoose');
 
-const transactionSchema = mongoose.Schema({
+const recordSchema = mongoose.Schema({
   date: {
     type: String,
     required: true
   },
-  transaction_type: {
-    type: String
+  type: {
+    type: String,
+    required: true
   },
   payment_type: {
     type: String,
     required: true
   },
-  transaction_category: {
-    type: String
+  category: {
+    type: String,
+    required: true
   },
   description: {
     type: String
@@ -24,6 +26,6 @@ const transactionSchema = mongoose.Schema({
   }
 });
 
-const transaction = new mongoose.model('Transaction', transactionSchema);
+const record = new mongoose.model('Transaction', recordSchema);
 
-module.exports = transaction;
+module.exports = record;
