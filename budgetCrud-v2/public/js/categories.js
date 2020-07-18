@@ -3,13 +3,13 @@ const categories = {
     Expense: ["Home", "Shopping/Groceries", "Transportation", "Maintenance", "Bills"]
 }
 
-const $typeSelection = document.querySelector("select[name='type']")
-const $categoriesSelection = document.querySelector("select[name='category']");
+const $typeSelection = document.querySelector("datalist[id='type']")
+const $categoriesSelection = document.querySelector("datalist[id='category']");
 
 function appendEachItem(element, category){
     category.forEach((item) => {
         const option = document.createElement('option');
-        option.textContent = item;
+        option.value = item;
         element.appendChild(option);
     })
 }

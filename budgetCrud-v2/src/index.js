@@ -1,10 +1,13 @@
 const path = require("path");
 const bcrypt = require("bcryptjs");
+const hbs = require("hbs");
+const mongoose = require("mongoose");
 
 require("./db/mongoose.js");
 const User = require("./models/user");
 const Record = require("./models/record");
 const app = require("./app");
+const { findByIdAndDelete } = require("./models/user");
 
 // -------------- Server -----------------
 const PORT = process.env.PORT
@@ -28,11 +31,11 @@ app.route('/')
 
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) res.status(400).send('Unable to login');
-      return res.render('transactions', { text: "Transactions" });
+      if (!isMatch) res.status(400).send();
+      res.redirect('/transactions')
     }
 
-    return res.status(404).send('User does not exist')
+    res.status(404).send();
   })
 
 app.route('/signup')
@@ -54,15 +57,55 @@ app.route('/signup')
       .catch(e => { res.send(e) });
   })
 
+  // -------------- Transactions Route ---------------
+
+  app.route("/transactions")
+  .get(async(req, res) => {
+      const records = await Record.find();
+      res.render('transactions', {
+        text: "Transactions",
+        records
+      });
+
+  })
+
 // --------------- Record Routes --------------
 
 app.route('/record')
 .get(async(req, res) => {
-  res.render('record');
+  res.render('record', {text: "Add", methodCall: "post"});
 })
 .post(async (req, res) => {
   const record = new Record(req.body);
+  
   await record.save()
-  .then((result) => res.send(result))
+  .then(() => {
+    setTimeout(() => {
+      res.redirect('/transactions');
+    }, 2000)
+  })
   .catch(e => res.status(400).send(e));
+})
+
+// ---------------- Record Edit and Delete Routes -------------
+app.route("/record?id=")
+.get(async(req, res) => {
+    const record = await Record.findById(req.query.id);
+    res.render('record', {
+      text: "Edit",
+      record,
+      methodCall: "patch"
+    });
+})
+.patch(async (req, res) => {
+  const id = req.query.id;
+  const record = await Record.findByIdAndUpdate(id, req.body, {new: true});
+  record
+  .then(() => res.redirect('/transactions'))
+  .catch(e => res.send(e))
+})
+.post(async(req, res) => {
+  await Record.findByIdAndDelete(req.query.id)
+  .then(() => res.redirect('/transactions'))
+  .catch(e => res.status(404).send(e));
 })

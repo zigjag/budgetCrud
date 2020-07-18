@@ -18,8 +18,24 @@
     </tr>
   </thead>
   <tbody>
-    {{!-- <a href="/edit?id=<%= record.id %>" class="btn btn-sm btn-primary">Edit</a>
-    <a href="/delete?id=<%= record.id %>" class="btn btn-sm btn-danger">Delete</a> --}}
+    {{#each records}}
+      <tr>
+        <td>{{this._id}}</td>
+        <td>{{this.date}}</td>
+        <td>{{this.type}}</td>
+        <td>{{this.payment_type}}</td>
+        <td>{{this.category}}</td>
+        <td>{{this.description}}</td>
+        <td>{{this.amount}}</td>
+        <td>
+            <a href="/record?id={{this._id}}" class="btn btn-sm btn-primary">Edit</a>
+
+            <form action="/record?id={{this._id}}" method="post">
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </form>
+        </td>
+      </tr>
+    {{/each}}
   </tbody>
 </table>
 

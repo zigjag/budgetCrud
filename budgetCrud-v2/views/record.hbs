@@ -1,38 +1,45 @@
 {{>header}}
 
 <div class="form-div">
-    <form action="/record" method="post">
+    
+    <form action="/record" method={{methodCall}}>
+        <h3>{{text}} Form</h3>
+
         <label>Date</label>
-        <input type="date" name="date">
+        <input type="date" name="date" value={{record.date}}>
 
         <label>Type</label>
-        <select name="type" required>
-            <option value="Income">Income</option>
-            <option value="Expense" selected>Expense</option>
-        </select>
+        <input name="type" list="type" value={{record.type}}>
+        <datalist id="type" required>
+            <option value="Income"></option>
+            <option value="Expense" selected></option>
+        </datalist>
     
         <label>Payment Type</label>
-        <select name="payment_type" required>
-            <option value="Cash">Cash</option>
-            <option value="Credit Card">Credit Card</option>
-            <option value="Debit Card">Debit Card</option>
-            <option value="Account Transfer">Account Transfer</option>>
-        </select>
+        <input name="payment_type" list="payment_type" value={{record.payment_type}}>
+        <datalist id="payment_type" required>
+            <option value="Select a payment type..."></option>
+            <option value="Cash"></option>
+            <option value="Credit Card"></option>
+            <option value="Debit Card"></option>
+            <option value="Account Transfer"></option>
+        </datalist>
     
         <label>Category</label>
-        <select name="category" required>
+        <input name="category" list="category" value={{record.category}}>
+        <datalist id="category" required>
+            <option value="Select a category..."></option>
             {{!-- options added by categories.js --}}
-        </select>
+        </datalist>
     
         <label>Description</label>
-        <input type="text" name="description">
+        <input type="text" name="description" value={{record.description}}>
     
         <label>Amount</label>
-        <input type="number" name="amount" step=0.01 min="0" required>
+        <input type="number" name="amount" step=0.01 min="0" value={{record.amount}} required>
 
         <button type="Submit">Submit</button>
     </form>
 </div>
 
-<script src="js/categories.js"></script>
 {{>footer}}
