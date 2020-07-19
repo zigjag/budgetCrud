@@ -53,7 +53,7 @@ app.route('/signup')
     });
 
     await user.save()
-      .then(res.send(user))
+      .then(res.redirect('/transactions'))
       .catch(e => { res.send(e) });
   })
 
@@ -88,18 +88,21 @@ app.route('/record')
 })
 
 // ---------------- Record Edit and Delete Routes -------------
-app.route("/record?id=")
+app.route("/record/:id")
 .get(async(req, res) => {
+    const id = req.params.id;
     const record = await Record.findById(req.query.id);
+
     res.render('record', {
       text: "Edit",
       record,
       methodCall: "patch"
-    });
-})
+    })
+  })
 .patch(async (req, res) => {
-  const id = req.query.id;
+  const id = req.params.id;
   const record = await Record.findByIdAndUpdate(id, req.body, {new: true});
+
   record
   .then(() => res.redirect('/transactions'))
   .catch(e => res.send(e))

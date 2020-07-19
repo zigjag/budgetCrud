@@ -4,7 +4,7 @@
 
   <a href="/record" class="btn btn-sm btn-success">Add</a>
 
-  <table class="table table-bordered table-dark table-striped table-hover table-sm">
+  <table class="table table-bordered table-dark table-striped table-hover table-sm table-responsive-sm">
   <thead>
     <tr>
       <th>ID</th>
@@ -28,9 +28,9 @@
         <td>{{this.description}}</td>
         <td>{{this.amount}}</td>
         <td>
-            <a href="/record?id={{this._id}}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="/record/{{this._id}}" class="btn btn-sm btn-primary">Edit</a>
 
-            <form action="/record?id={{this._id}}" method="post">
+            <form action="/record/{{this._id}}" method="post">
               <button class="btn btn-sm btn-danger">Delete</button>
             </form>
         </td>
