@@ -27,15 +27,16 @@ app.route('/')
   .post(async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    const user = await User.findOne({ username });
-
-    if (user) {
+    try{
+      const user = await User.findOne({ username });
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) res.status(400).send();
-      res.redirect('/transactions')
-    }
 
-    res.status(404).send();
+      const token = await user.generateAuthToken();
+      res.redirect('/transactions')
+    } catch(e) {
+      res.status(400).send();
+    }
   })
 
 app.route('/signup')
@@ -52,10 +53,21 @@ app.route('/signup')
       password: await bcrypt.hash(req.body.password, 8)
     });
 
-    await user.save()
-      .then(res.redirect('/transactions'))
-      .catch(e => { res.send(e) });
+    try{
+      await user.save();
+      const token = await user.generateAuthToken();
+      res.redirect('/transactions');
+    } catch(e){
+      res.send(e);
+    }
   })
+
+  // app.route('/logout')
+  // .get(async(req, res) => {
+  //   res.render('render', {
+  //     text: 'Logout',
+  //   })
+  // })
 
   // -------------- Transactions Route ---------------
 
@@ -119,12 +131,26 @@ app.route('/delete')
 // --------------- Balance Routes ------------
 app.route('/balance')
 .get(async(req, res) => {
-  const records = await Record.find({type: "Expense"});
-  const expenses = () => {
+  const findTypeMatch = (typeMatch) => {
+    return  Record.find({type: typeMatch})
+  }
+  const income = await findTypeMatch("Income");
+  const expense = await findTypeMatch("Expense");
+
+  const aggregate = (items) => {
     let counter = 0;
-    records.forEach(record => counter += record.amount);
-    return counter
+    items.forEach(item => counter += item.amount);
+    return counter;
   }
 
-  res.send(expenses().toString());
+  const incomeAggregate = aggregate(income);
+  const expenseAggregate = aggregate(expense);
+  const balance = (incomeAggregate - expenseAggregate)
+
+  res.render('balance', {
+    incomeAggregate,
+    expenseAggregate,
+    balance
+  })
+
 })
