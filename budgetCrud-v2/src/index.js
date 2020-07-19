@@ -69,15 +69,17 @@ app.route('/signup')
 
   })
 
-// --------------- Record Routes --------------
+// --------------- Add Record Routes --------------
 
-app.route('/record')
+app.route('/add')
 .get(async(req, res) => {
-  res.render('record', {text: "Add", methodCall: "post"});
+  res.render('record', {
+    form_type: "Add",
+    form_action: "/add"});
 })
 .post(async (req, res) => {
   const record = new Record(req.body);
-  
+
   await record.save()
   .then(() => {
     setTimeout(() => {
@@ -87,28 +89,42 @@ app.route('/record')
   .catch(e => res.status(400).send(e));
 })
 
-// ---------------- Record Edit and Delete Routes -------------
-app.route("/record/:id")
+// ---------------- Edit Record Routes -------------
+app.route("/record")
 .get(async(req, res) => {
-    const id = req.params.id;
+    const id = req.query.id;
     const record = await Record.findById(req.query.id);
 
     res.render('record', {
-      text: "Edit",
-      record,
-      methodCall: "patch"
+      form_type: "Edit",
+      form_action: "/record?id=" + id,
+      record
     })
   })
-.patch(async (req, res) => {
-  const id = req.params.id;
-  const record = await Record.findByIdAndUpdate(id, req.body, {new: true});
-
-  record
+.post(async (req, res) => {
+  const id = req.query.id;
+  await Record.findByIdAndUpdate(id, req.body, {new: true, useFindAndModify: false})
   .then(() => res.redirect('/transactions'))
   .catch(e => res.send(e))
 })
+
+// ----------------- Delete Record ---------------
+app.route('/delete')
 .post(async(req, res) => {
   await Record.findByIdAndDelete(req.query.id)
   .then(() => res.redirect('/transactions'))
   .catch(e => res.status(404).send(e));
+})
+
+// --------------- Balance Routes ------------
+app.route('/balance')
+.get(async(req, res) => {
+  const records = await Record.find({type: "Expense"});
+  const expenses = () => {
+    let counter = 0;
+    records.forEach(record => counter += record.amount);
+    return counter
+  }
+
+  res.send(expenses().toString());
 })

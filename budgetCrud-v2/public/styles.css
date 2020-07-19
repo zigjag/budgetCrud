@@ -8,13 +8,8 @@ footer{
   text-align: center;
 }
 
-form > h1, a{
+form > h3, a{
   text-align: center;
-}
-
-form > button{
-  background-color: green;
-  color: #fff;
 }
 
 .form-div{

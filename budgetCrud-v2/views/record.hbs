@@ -1,44 +1,57 @@
 {{>header}}
 
-<div class="form-div">
-    
-    <form action="/record" method={{methodCall}}>
-        <h3>{{text}} Form</h3>
+<div>
 
-        <label>Date</label>
-        <input type="date" name="date" value={{record.date}}>
+    <form action={{form_action}} method=post>
+        <h3>{{form_type}} Form</h3>
 
-        <label>Type</label>
-        <input name="type" list="type" value={{record.type}}>
-        <datalist id="type" required>
-            <option value="Income"></option>
-            <option value="Expense" selected></option>
-        </datalist>
-    
-        <label>Payment Type</label>
-        <input name="payment_type" list="payment_type" value={{record.payment_type}}>
-        <datalist id="payment_type" required>
-            <option value="Select a payment type..."></option>
-            <option value="Cash"></option>
-            <option value="Credit Card"></option>
-            <option value="Debit Card"></option>
-            <option value="Account Transfer"></option>
-        </datalist>
-    
-        <label>Category</label>
-        <input name="category" list="category" value={{record.category}}>
-        <datalist id="category" required>
-            <option value="Select a category..."></option>
-            {{!-- options added by categories.js --}}
-        </datalist>
-    
-        <label>Description</label>
-        <input type="text" name="description" value={{record.description}}>
-    
-        <label>Amount</label>
-        <input type="number" name="amount" step=0.01 min="0" value={{record.amount}} required>
+        <div class="form-group">
+          <label>Date</label>
+          <input class="form-control" type="date" name="date" value={{record.date}}>
+        </div>
 
-        <button type="Submit">Submit</button>
+        <div class="form-group">
+            <label>Type</label>
+            <input class="form-control" name="type" list="type" value={{record.type}}>
+            <datalist id="type" required>
+                <option value="Income"></option>
+                <option value="Expense" selected></option>
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label>Payment Type</label>
+            <input class="form-control" name="payment_type" list="payment_type" value={{record.payment_type}}>
+            <datalist id="payment_type" required>
+                <option value="Select a payment type..."></option>
+                <option value="Cash"></option>
+                <option value="Credit Card"></option>
+                <option value="Debit Card"></option>
+                <option value="Account Transfer"></option>
+            </datalist>
+        </div>
+
+
+        <div>
+            <label>Category</label>
+            <input class="form-control" name="category" list="category" value={{record.category}}>
+            <datalist id="category" required>
+                <option value="Select a category..."></option>
+                {{!-- options added by categories.js --}}
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <input class="form-control" type="text" name="description" value={{record.description}}>
+        </div>
+
+        <div>
+            <label>Amount</label>
+            <input class="form-control" type="number" name="amount" step=0.01 min="0" value={{record.amount}} required>
+        </div>
+
+        <button type="Submit" class="btn btn-success">Submit</button>
     </form>
 </div>
 

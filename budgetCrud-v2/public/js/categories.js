@@ -3,7 +3,7 @@ const categories = {
     Expense: ["Home", "Shopping/Groceries", "Transportation", "Maintenance", "Bills"]
 }
 
-const $typeSelection = document.querySelector("datalist[id='type']")
+const $typeSelection = document.querySelector("input[name='type']")
 const $categoriesSelection = document.querySelector("datalist[id='category']");
 
 function appendEachItem(element, category){

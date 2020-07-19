@@ -3,15 +3,15 @@
 <div class="form-div">
 
   <form action="/{{link}}" method="post">
-    <h1>{{text}}</h1>
-    
+    <h3>{{text}}</h1>
+
     <label>Username</label>
     <input type="text" name="username" placeholder="Spongebob" required>
 
     <label>Password</label>
     <input type="password" name="password" placeholder="p@ssw0rd" required>
 
-    <button type="submit" name="submit">{{text}}</button>
+    <button class="btn btn-success" type="submit" name="submit">{{text}}</button>
 
     <a href="/{{altLink}}">{{altText}}</a>
   </form>
