@@ -2,6 +2,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const hbs = require("hbs");
 const mongoose = require("mongoose");
+const auth = require('./middleware/auth');
 
 require("./db/mongoose.js");
 const User = require("./models/user");
@@ -33,6 +34,7 @@ app.route('/')
       if (!isMatch) res.status(400).send();
 
       const token = await user.generateAuthToken();
+      req.header.authorization = token;
       res.redirect('/transactions')
     } catch(e) {
       res.status(400).send();
@@ -62,17 +64,22 @@ app.route('/signup')
     }
   })
 
-  // app.route('/logout')
-  // .get(async(req, res) => {
-  //   res.render('render', {
-  //     text: 'Logout',
-  //   })
-  // })
+  app.route('/logout')
+  .post(auth, async(req, res) => {
+    try{
+      req.user.tokens = [];
+      await req.user.save();
+      res.redirect('/');
+    } catch(e){
+      // res.status(400).send(e);
+      console.log(e)
+    }
+  })
 
   // -------------- Transactions Route ---------------
 
   app.route("/transactions")
-  .get(async(req, res) => {
+  .get(auth, async(req, res) => {
       const records = await Record.find();
       res.render('transactions', {
         text: "Transactions",
@@ -84,7 +91,7 @@ app.route('/signup')
 // --------------- Add Record Routes --------------
 
 app.route('/add')
-.get(async(req, res) => {
+.get(auth, async(req, res) => {
   res.render('record', {
     form_type: "Add",
     form_action: "/add"});
@@ -103,7 +110,7 @@ app.route('/add')
 
 // ---------------- Edit Record Routes -------------
 app.route("/record")
-.get(async(req, res) => {
+.get(auth, async(req, res) => {
     const id = req.query.id;
     const record = await Record.findById(req.query.id);
 
@@ -130,7 +137,7 @@ app.route('/delete')
 
 // --------------- Balance Routes ------------
 app.route('/balance')
-.get(async(req, res) => {
+.get(auth, async(req, res) => {
   const findTypeMatch = (typeMatch) => {
     return  Record.find({type: typeMatch})
   }
