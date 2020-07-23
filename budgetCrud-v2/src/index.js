@@ -50,14 +50,12 @@ app.route('/signup')
     });
   })
   .post(async (req, res) => {
-    const user = new User({
-      username: req.body.username,
-      password: await bcrypt.hash(req.body.password, 8)
-    });
+    const user = new User(req.body);
 
     try{
       await user.save();
       const token = await user.generateAuthToken();
+      req.header.authorization = token;
       res.redirect('/transactions');
     } catch(e){
       res.send(e);
@@ -68,11 +66,10 @@ app.route('/signup')
   .post(auth, async(req, res) => {
     try{
       req.user.tokens = [];
-      await req.user.save();
+      await req.user.save()
       res.redirect('/');
     } catch(e){
-      // res.status(400).send(e);
-      console.log(e)
+      res.status(400).send(e);
     }
   })
 
